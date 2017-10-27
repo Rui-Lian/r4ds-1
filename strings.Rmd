@@ -281,14 +281,42 @@ You can also match the boundary between words with `\b`. I don't often use this 
     expressions that find all words that:
     
     1. Start with "y".
-    1. End with "x"
-    1. Are exactly three letters long. (Don't cheat by using `str_length()`!)
-    1. Have seven letters or more.
+```{r}
+str_view_all(words, "^y", match = TRUE)
+```
 
-    Since this list is long, you might want to use the `match` argument to
-    `str_view()` to show only the matching or non-matching words.
+
+    1. End with "x"
+```{r}
+str_view_all(words, "x$", match = TRUE)
+```
+
+
+    1. Are exactly three letters long. (Don't cheat by using `str_length()`!)
+```{r}
+?str_view
+str_view(words, "^...$", match = TRUE)
+```
+
+
+    1. Have seven letters or more.
+    
+```{r}
+
+```
+
+Since this list is long, you might want to use the `match` argument to `str_view()` to show only the matching or non-matching words.
+
 
 ### Character classes and alternatives
+summary:
+digit: `\d`; need backslash to escape
+whitespace: `\s`; need backslash to escape
+letter: `[abc]`
+except letter: `[^abc]`
+set boundaries for alteration |
+
+
 
 There are a number of special patterns that match more than one character. You've already seen `.`, which matches any character apart from a newline. There are four other useful tools:
 
@@ -310,23 +338,49 @@ str_view(c("grey", "gray"), "gr(e|a)y")
 1.  Create regular expressions to find all words that:
 
     1. Start with a vowel.
+    
+```{r}
+str_view(words, "^[aeiou]", match = TRUE)
+```
 
     1. That only contain consonants. (Hint: thinking about matching 
        "not"-vowels.)
+       
+```{r}
+str_view(words, "^[^aeiou]+$", match = TRUE)
+```
 
     1. End with `ed`, but not with `eed`.
+```{r}
+str_view(words, "[^e]ed$", match = TRUE)
+```
+
     
     1. End with `ing` or `ise`.
+```{r}
+str_view(words, "i(ng|se)$", match = TRUE)
+```
+
     
 1.  Empirically verify the rule "i before e except after c".
+```{r}
+str_view(words, "cie", match = TRUE)
+```
 
 1.  Is "q" always followed by a "u"?
+```{r}
+str_view(words, "^q[a-z]", match = TRUE)
+str_view(words, "^q[^u]", match = TRUE)
+```
+
 
 1.  Write a regular expression that matches a word if it's probably written
     in British English, not American English.
 
+
 1.  Create a regular expression that will match telephone numbers as commonly
     written in your country.
+
 
 ### Repetition
 
@@ -338,9 +392,11 @@ The next step up in power involves controlling how many times a pattern matches:
 
 ```{r}
 x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
+x; length(x)
 str_view(x, "CC?")
 str_view(x, "CC+")
 str_view(x, 'C[LX]+')
+str_view(x, 'C[LX]*')
 ```
 
 Note that the precedence of these operators is high, so you can write: `colou?r` to match either American or British spellings. That means most uses will need parentheses, like `bana(na)+`.
@@ -607,11 +663,26 @@ Note the use of `str_view_all()`. As you'll shortly learn, many stringr function
     regular expression, and a combination of multiple `str_detect()` calls.
     
     1.  Find all words that start or end with `x`.
+```{r}
+words[str_detect(words, "^x|x$")]
+```
+
+    
     
     1.  Find all words that start with a vowel and end with a consonant.
-    
+```{r}
+a <- str_subset(words, "^[aeiou]")
+a <- str_subset(a, "[^aeiou]$")
+head(a)
+```
+
+
     1.  Are there any words that contain at least one of each different
         vowel?
+```{r}
+
+
+```
 
 1.  What word has the highest number of vowels? What word has the highest
     proportion of vowels? (Hint: what is the denominator?)
